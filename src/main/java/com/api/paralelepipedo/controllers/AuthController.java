@@ -20,9 +20,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.api.paralelepipedo.config.UserRoles;
 import com.api.paralelepipedo.dtos.AuthDTO;
+import com.api.paralelepipedo.dtos.RegisterAlunoDTO;
 import com.api.paralelepipedo.dtos.RegisterProfessorDTO;
+import com.api.paralelepipedo.models.Aluno;
 import com.api.paralelepipedo.models.Professor;
 import com.api.paralelepipedo.models.User;
+import com.api.paralelepipedo.repositories.AlunoRepository;
 import com.api.paralelepipedo.repositories.ProfessorRepository;
 import com.api.paralelepipedo.repositories.UserRepository;
 import com.api.paralelepipedo.services.JWTService;
@@ -32,17 +35,17 @@ import com.api.paralelepipedo.services.JWTService;
 @CrossOrigin(origins = "http://localhost:5670")
 public class AuthController {
 	
-	@Autowired
-	private AuthenticationManager authManager;
+	@Autowired private AuthenticationManager authManager;
 	@Autowired UserRepository userRepo;
 	@Autowired ProfessorRepository profRepo;
+	@Autowired AlunoRepository alunoRepo;
 	@Autowired PasswordEncoder encoder;
 	@Autowired JWTService tokenService;
 	
 	@PostMapping("/login")
 	public ResponseEntity<Map<String,String>> login(@RequestBody @Validated AuthDTO dto)
 	{
-		var userPassword = new UsernamePasswordAuthenticationToken(dto.email(), dto.senha());
+		var userPassword = new UsernamePasswordAuthenticationToken(dto.email(), dto.password());
 		var auth = this.authManager.authenticate(userPassword);
 		
 		var token = tokenService.generateToken((User)auth.getPrincipal());
@@ -72,7 +75,7 @@ public class AuthController {
 	
 	
 	@PostMapping("/register/professor")
-	public ResponseEntity<Map<String,String>> register(@RequestBody @Validated RegisterProfessorDTO dto)
+	public ResponseEntity<Map<String,String>> registerProfessor(@RequestBody @Validated RegisterProfessorDTO dto)
 	{
 		if(this.userRepo.findByEmail(dto.email()).isPresent()) 
 		{
@@ -97,6 +100,40 @@ public class AuthController {
 		prof.setRg(dto.rg());
 		
 		profRepo.save(prof);
+		var auth = this.authManager.authenticate(userPassword);
+		var token = tokenService.generateToken((User)auth.getPrincipal());
+		
+		var body = Map.of("token", token);
+		
+		return new ResponseEntity<>(body, HttpStatus.OK);
+		
+	}
+	
+	@PostMapping("/register/aluno")
+	public ResponseEntity<Map<String,String>> registerAluno(@RequestBody @Validated RegisterAlunoDTO dto)
+	{
+		if(this.userRepo.findByEmail(dto.email()).isPresent()) 
+		{
+			System.out.println("User already exists");
+			return new ResponseEntity<>(Map.of("erro", "usuario ja existe"), HttpStatus.BAD_REQUEST);
+		}
+		var userPassword = new UsernamePasswordAuthenticationToken(dto.email(), dto.password());
+		
+		String encryptedPassword = encoder.encode(dto.password());
+		
+		User user = new User(dto.name(), dto.email(),encryptedPassword, UserRoles.ALUNO);
+		this.userRepo.save(user);
+		
+		
+		
+		Aluno aluno = new Aluno();
+		aluno.setUser(user);
+		aluno.setName(dto.name());
+		aluno.setFee(dto.fee());
+		aluno.setRegistration(dto.registration());
+		
+		
+		alunoRepo.save(aluno);
 		var auth = this.authManager.authenticate(userPassword);
 		var token = tokenService.generateToken((User)auth.getPrincipal());
 		

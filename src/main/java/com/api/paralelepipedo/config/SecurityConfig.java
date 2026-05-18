@@ -35,7 +35,8 @@ public class SecurityConfig {
 	        		.requestMatchers(
 	        	            HttpMethod.POST,
 	        	            "/auth/login",
-	        	            "/auth/register/professor"
+	        	            "/auth/register/professor",
+	        	            "/auth/register/aluno"
 	        	        ).permitAll()
 	        	        .anyRequest().authenticated()
 	        ).addFilterBefore(tokenFilter, UsernamePasswordAuthenticationFilter.class);

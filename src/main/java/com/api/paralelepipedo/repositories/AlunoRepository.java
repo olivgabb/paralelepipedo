@@ -1,0 +1,11 @@
+package com.api.paralelepipedo.repositories;
+
+import java.util.UUID;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.api.paralelepipedo.models.Aluno;
+
+public interface AlunoRepository extends JpaRepository<Aluno, UUID> {
+
+}
