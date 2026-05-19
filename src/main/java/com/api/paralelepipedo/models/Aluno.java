@@ -15,6 +15,7 @@ import lombok.AllArgsConstructor;
 @Entity(name="alunos")
 @AllArgsConstructor
 public class Aluno {
+
 	@Id
 	private UUID id;
 	@Column(name="nome")
@@ -63,6 +64,7 @@ public class Aluno {
 		this.fee = fee;
 	}
 
-
-	
+	public UUID getId() {
+		return id;
+	}
 }

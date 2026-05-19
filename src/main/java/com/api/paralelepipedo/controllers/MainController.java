@@ -1,21 +1,30 @@
 package com.api.paralelepipedo.controllers;
 
+import com.api.paralelepipedo.models.Aluno;
+import com.api.paralelepipedo.services.AlunoService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import com.api.paralelepipedo.dtos.RegisterProfessorDTO;
+
+import java.util.List;
+import java.util.UUID;
 
 @RestController
-@RequestMapping("/")
+@RequestMapping("/alunos")
 public class MainController {
-	@GetMapping("/gay")
-	public String hello()
-	{
-		
-		return "gay";
+
+	@Autowired
+	private AlunoService alunoService;
+
+	@GetMapping("/{id}")
+	public ResponseEntity<Aluno> buscarPorId(@PathVariable UUID id) {
+		return ResponseEntity.ok(alunoService.buscarPorId(id));
 	}
-	
+
+	@GetMapping("/buscar")
+	public ResponseEntity<List<Aluno>> buscarPorNome(@RequestParam String nome) {
+		return ResponseEntity.ok(alunoService.buscarPorNome(nome));
+	}
 }
+
