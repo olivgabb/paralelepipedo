@@ -142,4 +142,29 @@ public class AuthController {
 		return new ResponseEntity<>(body, HttpStatus.OK);
 		
 	}
+	
+	@PostMapping("/register/admin")
+	public ResponseEntity<Map<String,String>> registerAdmin(@RequestBody @Validated AuthDTO dto)
+	{
+		if(this.userRepo.findByEmail(dto.email()).isPresent()) 
+		{
+			System.out.println("User already exists");
+			return new ResponseEntity<>(Map.of("erro", "usuario ja existe"), HttpStatus.BAD_REQUEST);
+		}
+		var userPassword = new UsernamePasswordAuthenticationToken(dto.email(), dto.password());
+		
+		String encryptedPassword = encoder.encode(dto.password());
+		
+		User user = new User(dto.name(), dto.email(),encryptedPassword, UserRoles.ADMIN);
+		this.userRepo.save(user);
+		
+		
+		var auth = this.authManager.authenticate(userPassword);
+		var token = tokenService.generateToken((User)auth.getPrincipal());
+		
+		var body = Map.of("token", token);
+		
+		return new ResponseEntity<>(body, HttpStatus.OK);
+		
+	}
 }
