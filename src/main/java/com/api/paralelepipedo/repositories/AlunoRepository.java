@@ -10,9 +10,8 @@ import com.api.paralelepipedo.models.Aluno;
 
 public interface AlunoRepository extends JpaRepository<Aluno, UUID> {
 
-    Optional<Aluno> findByMatricula(String matricula);
-    Optional<Aluno> findByCpf(String cpf);
-    Optional<Aluno> findByNome(String nome);
-    List<Aluno> findByNomeContainingIgnoreCase(String nome);
+    Optional<Aluno> findByRegistration(int registration);
+    Optional<Aluno> findByName(String name);
+    List<Aluno> findByNameContainingIgnoreCase(String name);
 
 }

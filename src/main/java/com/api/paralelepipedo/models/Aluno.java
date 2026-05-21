@@ -1,5 +1,7 @@
 package com.api.paralelepipedo.models;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import jakarta.persistence.Column;
@@ -7,6 +9,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.MapsId;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -38,6 +41,9 @@ public class Aluno {
     @MapsId
     @JoinColumn(name = "id")
 	private User user;
+	
+	@OneToMany(mappedBy = "student")
+    private List<Grade> notas = new ArrayList<>();
 	
 	public Aluno() {
 		

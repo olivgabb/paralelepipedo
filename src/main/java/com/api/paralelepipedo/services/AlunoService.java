@@ -14,12 +14,12 @@ public class AlunoService {
     @Autowired
     private AlunoRepository alunoRepository;
 
-    public Aluno buscarPorId(UUID id) {
-        return alunoRepository.findById(id)
+    public Aluno buscarPorMatricula(int registration) {
+        return alunoRepository.findByRegistration(registration)
                 .orElseThrow(() -> new RuntimeException("Aluno não encontrado"));
     }
 
-    public List<Aluno> buscarPorNome(String nome) {
-        return alunoRepository.findByNomeContainingIgnoreCase(nome);
+    public List<Aluno> buscarPorNome(String name) {
+        return alunoRepository.findByNameContainingIgnoreCase(name);
     }
 }
