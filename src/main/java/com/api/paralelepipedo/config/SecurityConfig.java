@@ -40,7 +40,11 @@ public class SecurityConfig {
 	        		.requestMatchers(HttpMethod.POST,
 	        				"/auth/register/professor",
 	        	            "/auth/register/aluno")
-	        		.hasAllRoles("ADMIN")
+	        		.hasRole("ADMIN")
+	        		.requestMatchers(HttpMethod.DELETE,
+	        				"/auth/delete/aluno/{registration}",
+	        	            "/auth/delete/professor/{num_vinculo}")
+	        		.hasRole("ADMIN")
 	        	        .anyRequest().authenticated()
 	        ).addFilterBefore(tokenFilter, UsernamePasswordAuthenticationFilter.class);
 

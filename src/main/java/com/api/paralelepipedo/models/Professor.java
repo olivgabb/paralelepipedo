@@ -3,6 +3,7 @@ package com.api.paralelepipedo.models;
 import java.sql.Date;
 import java.util.UUID;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
@@ -11,7 +12,6 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-
 @Entity
 @Table(name="professores")
 @AllArgsConstructor
@@ -25,8 +25,10 @@ public class Professor {
 	private Date nascimento;
 	private String rg;
 	private String formacao;
-	private int num_vinculo;
-	private String tipo_vinculo;
+	@Column(name="num_vinculo")
+	private int numVinculo;
+	@Column(name="tipo_vinculo")
+	private String tipoVinculo;
 	
 	@OneToOne
     @MapsId
@@ -45,10 +47,10 @@ public class Professor {
 		return formacao;
 	}
 	public int getNum_vinculo() {
-		return num_vinculo;
+		return numVinculo;
 	}
 	public String getTipo_vinculo() {
-		return tipo_vinculo;
+		return tipoVinculo;
 	}
 	public User getUser() {
 		return user;
@@ -63,10 +65,10 @@ public class Professor {
 		this.formacao = formacao;
 	}
 	public void setNum_vinculo(int num_vinculo) {
-		this.num_vinculo = num_vinculo;
+		this.numVinculo = num_vinculo;
 	}
 	public void setTipo_vinculo(String tipo_vinculo) {
-		this.tipo_vinculo = tipo_vinculo;
+		this.tipoVinculo = tipo_vinculo;
 	}
 	public void setUser(User user) {
 		this.user = user;

@@ -20,7 +20,7 @@ import com.api.paralelepipedo.dtos.GradeDTO;
 
 @RestController
 @RequestMapping("/alunos")
-public class MainController {
+public class AlunosController {
 
 	@Autowired
 	private AlunoService alunoService;

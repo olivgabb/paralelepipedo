@@ -30,10 +30,10 @@ public class TokenFilter extends OncePerRequestFilter {
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
 		var token = this.getToken(request);
-		System.out.println(request.getHeader("Authorization"));
+		//System.out.println(request.getHeader("Authorization"));
 		String path = request.getServletPath();
 
-		if(path.equals("/auth/login") || path.equals("/auth/register/professor")) {
+		if(path.equals("/auth/login")) {
 		    filterChain.doFilter(request, response);
 		    return;
 		}
@@ -41,11 +41,11 @@ public class TokenFilter extends OncePerRequestFilter {
 		if(token!=null)
 		{
 			var login= jwtService.validateToken(token);
-			System.out.println(login);
+			System.out.println("\n\n\n\nThis is my login: " +login);
 			if (login != null) {
 				if (userRepo.findByEmail(login).isPresent()) {
 					UserDetails user = userRepo.findByEmail(login).get();
-					System.out.println(user.getAuthorities());
+					//System.out.println(user.getAuthorities());
 					var auth = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
 					SecurityContextHolder.getContext().setAuthentication(auth);
 				}

@@ -12,7 +12,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,6 +28,7 @@ import com.api.paralelepipedo.models.Aluno;
 import com.api.paralelepipedo.models.Professor;
 import com.api.paralelepipedo.models.User;
 import com.api.paralelepipedo.repositories.AlunoRepository;
+import com.api.paralelepipedo.repositories.ClassRepository;
 import com.api.paralelepipedo.repositories.ProfessorRepository;
 import com.api.paralelepipedo.repositories.UserRepository;
 import com.api.paralelepipedo.services.JWTService;
@@ -41,6 +44,7 @@ public class AuthController {
 	@Autowired AlunoRepository alunoRepo;
 	@Autowired PasswordEncoder encoder;
 	@Autowired JWTService tokenService;
+	@Autowired ClassRepository classRepo;
 	
 	@PostMapping("/login")
 	public ResponseEntity<Map<String,String>> login(@RequestBody @Validated AuthDTO dto)
@@ -131,6 +135,8 @@ public class AuthController {
 		aluno.setName(dto.name());
 		aluno.setFee(dto.fee());
 		aluno.setRegistration(dto.registration());
+		aluno.setStudentClass(classRepo.findById(dto.id_class()).orElseThrow(
+				()->new RuntimeException("Turma não existe")));
 		
 		
 		alunoRepo.save(aluno);
@@ -166,6 +172,45 @@ public class AuthController {
 		
 		return new ResponseEntity<>(body, HttpStatus.OK);
 		
+	}
+	
+	@DeleteMapping("/delete/professor/{num_vinculo}")
+	public ResponseEntity deleteProfessor(@PathVariable int num_vinculo)
+	{
+		//System.out.println(profRepo.findByNumVinculo(6));
+		Professor prof = profRepo.findByNumVinculo(num_vinculo).orElseThrow(
+				()-> new RuntimeException("Professor não existe"));
+		User user = userRepo.findById(prof.getId()).orElseThrow(
+				()-> new RuntimeException("Professor não existe"));
+		
+		
+		profRepo.delete(prof);
+		userRepo.delete(user);
+		
+		return ResponseEntity.ok().build();
+		
+	}
+	
+	
+	@DeleteMapping("/delete/aluno/{registration}")
+	public ResponseEntity deleteAluno(@PathVariable int registration)
+	{
+		Aluno aluno = alunoRepo.findByRegistration(registration).orElseThrow(
+				()-> new RuntimeException("Aluno não existe"));
+		User user = userRepo.findById(aluno.getId()).orElseThrow(
+				()-> new RuntimeException("Aluno não existe"));
+		
+		alunoRepo.delete(aluno);
+		userRepo.delete(user);
+		
+		return ResponseEntity.ok().build();
+		
+	}
+	
+	@GetMapping("/test")
+	public String test()
+	{
+		return "test";
 	}
 	
 	
