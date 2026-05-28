@@ -46,7 +46,8 @@ public class SecurityConfig {
 	        	        ).permitAll()
 	        		.requestMatchers(HttpMethod.POST,
 	        				"/auth/register/professor",
-	        	            "/auth/register/aluno")
+	        	            "/auth/register/aluno",
+	        	            "/turmas/criar")
 	        		.hasRole("ADMIN")
 	        		.requestMatchers(HttpMethod.DELETE,
 	        				"/auth/delete/aluno/{registration}",

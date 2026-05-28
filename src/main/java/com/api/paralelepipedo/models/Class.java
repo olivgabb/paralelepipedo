@@ -48,6 +48,10 @@ public class Class {
 	@Column(name="nome")
 	private String name;
 	public Class() {}
+	public Class(String name, int studentCount) {
+		this.name = name;
+		this.student_count = studentCount;
+	}
 	@OneToMany(mappedBy = "studentClass")
 	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private List<Aluno> students = new ArrayList<>();
