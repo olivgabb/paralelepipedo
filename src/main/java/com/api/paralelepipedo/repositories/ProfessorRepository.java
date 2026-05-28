@@ -7,6 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.api.paralelepipedo.models.Professor;
 
-public interface ProfessorRepository extends JpaRepository<Professor, UUID> {
+public interface ProfessorRepository extends JpaRepository<Professor, Integer> {
 	Optional<Professor> findByNumVinculo(int numVinculo);
 }

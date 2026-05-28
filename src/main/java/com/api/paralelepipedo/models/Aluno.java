@@ -4,10 +4,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.web.bind.annotation.CrossOrigin;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -23,11 +29,12 @@ import lombok.AllArgsConstructor;
 public class Aluno {
 
 	@Id
-	private UUID id;
+	@Column(name="matricula")
+	@GeneratedValue(strategy=GenerationType.SEQUENCE)
+	private Integer registration;
 	@Column(name="nome")
 	private String name;
-	@Column(name="matricula")
-	private int registration;
+	
 	public int getRegistration() {
 		return registration;
 	}
@@ -41,14 +48,16 @@ public class Aluno {
 	
 	
 	@OneToOne
-    @MapsId
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "id_usuario")
 	private User user;
 	
 	@ManyToOne
 	@JoinColumn(name="id_turma")
-	@JsonManagedReference
+	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 	private Class studentClass;
+	
+	@OneToMany(mappedBy = "student")
+    private List<Grade> grades = new ArrayList<>();
 	
 	public Class getStudentClass() {
 		return studentClass;
@@ -67,6 +76,11 @@ public class Aluno {
 		this.user = user;
 	}
 	
+	public User getUser()
+	{
+		return this.user;
+	}
+	
 	public String getName() {
 		return name;
 	}
@@ -83,7 +97,7 @@ public class Aluno {
 		this.fee = fee;
 	}
 
-	public UUID getId() {
-		return id;
+	public Integer getId() {
+		return registration;
 	}
 }

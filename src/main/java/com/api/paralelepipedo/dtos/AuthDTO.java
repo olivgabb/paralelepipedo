@@ -1,5 +1,5 @@
 package com.api.paralelepipedo.dtos;
 
-public record AuthDTO(String name, String email, String password) {
+public record AuthDTO(String email, String password) {
 
 }

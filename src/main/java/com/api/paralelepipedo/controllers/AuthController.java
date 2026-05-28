@@ -27,6 +27,7 @@ import com.api.paralelepipedo.dtos.RegisterProfessorDTO;
 import com.api.paralelepipedo.models.Aluno;
 import com.api.paralelepipedo.models.Professor;
 import com.api.paralelepipedo.models.User;
+import com.api.paralelepipedo.models.Class;
 import com.api.paralelepipedo.repositories.AlunoRepository;
 import com.api.paralelepipedo.repositories.ClassRepository;
 import com.api.paralelepipedo.repositories.ProfessorRepository;
@@ -64,19 +65,7 @@ public class AuthController {
 		if(tokenService.validateToken(req.get("token")) != "") return ResponseEntity.ok().build();
 		return ResponseEntity.badRequest().build();
 	}
-	
-	@GetMapping("/get-username")
-	public ResponseEntity<Map<String,String>> getUsername()
-	{
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		var body = Map.of("username", auth.getName());
-		
-		if(auth == null || !auth.isAuthenticated())
-			return ResponseEntity.badRequest().build();
-		return new ResponseEntity<>(body, HttpStatus.OK);
-	}
-	
-	
+
 	
 	@PostMapping("/register/professor")
 	public ResponseEntity<Map<String,String>> registerProfessor(@RequestBody @Validated RegisterProfessorDTO dto)
@@ -99,7 +88,6 @@ public class AuthController {
 		prof.setUser(user);
 		prof.setCpf(dto.cpf());
 		prof.setFormacao(dto.formacao());
-		prof.setNum_vinculo(dto.num_vinculo());
 		prof.setTelefone(dto.telefone());
 		prof.setRg(dto.rg());
 		
@@ -128,15 +116,14 @@ public class AuthController {
 		User user = new User(dto.name(), dto.email(),encryptedPassword, UserRoles.ALUNO);
 		this.userRepo.save(user);
 		
-		
+		Class studentClass = classRepo.findById(dto.id_class()).orElseThrow(
+				()->new RuntimeException("Turma não existe"));
 		
 		Aluno aluno = new Aluno();
 		aluno.setUser(user);
 		aluno.setName(dto.name());
 		aluno.setFee(dto.fee());
-		aluno.setRegistration(dto.registration());
-		aluno.setStudentClass(classRepo.findById(dto.id_class()).orElseThrow(
-				()->new RuntimeException("Turma não existe")));
+		aluno.setStudentClass(studentClass);
 		
 		
 		alunoRepo.save(aluno);
@@ -161,7 +148,7 @@ public class AuthController {
 		
 		String encryptedPassword = encoder.encode(dto.password());
 		
-		User user = new User(dto.name(), dto.email(),encryptedPassword, UserRoles.ADMIN);
+		User user = new User(dto.email(),encryptedPassword, UserRoles.ADMIN);
 		this.userRepo.save(user);
 		
 		
@@ -180,7 +167,7 @@ public class AuthController {
 		//System.out.println(profRepo.findByNumVinculo(6));
 		Professor prof = profRepo.findByNumVinculo(num_vinculo).orElseThrow(
 				()-> new RuntimeException("Professor não existe"));
-		User user = userRepo.findById(prof.getId()).orElseThrow(
+		User user = userRepo.findByEmail(prof.getUser().getEmail()).orElseThrow(
 				()-> new RuntimeException("Professor não existe"));
 		
 		
@@ -197,7 +184,7 @@ public class AuthController {
 	{
 		Aluno aluno = alunoRepo.findByRegistration(registration).orElseThrow(
 				()-> new RuntimeException("Aluno não existe"));
-		User user = userRepo.findById(aluno.getId()).orElseThrow(
+		User user = userRepo.findByEmail(aluno.getUser().getEmail()).orElseThrow(
 				()-> new RuntimeException("Aluno não existe"));
 		
 		alunoRepo.delete(aluno);

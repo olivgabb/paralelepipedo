@@ -1,13 +1,18 @@
 package com.api.paralelepipedo.models;
 
 import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.MapsId;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -18,24 +23,23 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Professor {
 	@Id
-	private UUID id;
-	
+	@Column(name="num_vinculo")
+	@GeneratedValue(strategy=GenerationType.SEQUENCE)
+	private Integer numVinculo;
 	private String cpf;
 	private String telefone;
 	private Date nascimento;
 	private String rg;
 	private String formacao;
-	@Column(name="num_vinculo")
-	private int numVinculo;
 	@Column(name="tipo_vinculo")
 	private String tipoVinculo;
 	
 	@OneToOne
-    @MapsId
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "id_usuario")
 	private User user;
 	
-	
+	@OneToMany(mappedBy = "prof")
+    private List<Report> reports = new ArrayList<>();
 	
 	public Date getNascimento() {
 		return nascimento;
@@ -73,8 +77,8 @@ public class Professor {
 	public void setUser(User user) {
 		this.user = user;
 	}
-	public UUID getId() {
-		return id;
+	public Integer getId() {
+		return numVinculo;
 	}
 	public String getNome() {
 		return this.user.getUsername();

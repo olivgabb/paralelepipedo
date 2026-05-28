@@ -20,6 +20,7 @@ import com.api.paralelepipedo.dtos.GradeDTO;
 
 @RestController
 @RequestMapping("/alunos")
+@CrossOrigin(origins = "http://localhost:5670")
 public class AlunosController {
 
 	@Autowired

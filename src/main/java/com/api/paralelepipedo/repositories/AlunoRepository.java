@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.api.paralelepipedo.models.Aluno;
 
-public interface AlunoRepository extends JpaRepository<Aluno, UUID> {
+public interface AlunoRepository extends JpaRepository<Aluno, Integer> {
 
     Optional<Aluno> findByRegistration(int registration);
     Optional<Aluno> findByName(String name);

@@ -23,5 +23,8 @@ public class Subject {
 	private String name;
 	
 	@OneToMany(mappedBy = "subject")
-    private List<Grade> notas = new ArrayList<>();
+    private List<Grade> grades = new ArrayList<>();
+	
+	@OneToMany(mappedBy = "subject")
+    private List<Report> reports = new ArrayList<>();
 }

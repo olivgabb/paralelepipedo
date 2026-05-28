@@ -35,9 +35,11 @@ public class User implements UserDetails{
 	@Id
 	@GeneratedValue(strategy=GenerationType.UUID)
 	private UUID id;
+	@Column(name="nome")
 	private String username;
-	@Column(name="password")
+	@Column(name="senha")
 	private String password;
+	@Column(unique=true)
 	private String email;
 	@Enumerated(EnumType.STRING)
 	public UserRoles role;

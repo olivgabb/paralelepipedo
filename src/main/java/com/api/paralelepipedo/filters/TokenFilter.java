@@ -38,6 +38,11 @@ public class TokenFilter extends OncePerRequestFilter {
 		    return;
 		}
 		
+		if (request.getMethod().equals("OPTIONS")) {
+		    filterChain.doFilter(request, response);
+		    return;
+		}
+		
 		if(token!=null)
 		{
 			var login= jwtService.validateToken(token);
