@@ -25,6 +25,7 @@ public class JWTService {
 			String jwt = JWT.create()
 					.withIssuer("auth-api")
 					.withSubject(user.getEmail())
+					.withClaim("role", user.role.getRole())
 					.withExpiresAt(genExpireTime())
 					.sign(alg);
 			return jwt;

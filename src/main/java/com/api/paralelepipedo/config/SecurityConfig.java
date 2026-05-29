@@ -39,20 +39,26 @@ public class SecurityConfig {
 	        .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))	        
 	        .authorizeHttpRequests(auth -> auth
 	        		.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+	        		
 	        		.requestMatchers(
 	        	            HttpMethod.POST,
 	        	            "/auth/login",
 	        	            "/auth/register/admin"
 	        	        ).permitAll()
+	        		
 	        		.requestMatchers(HttpMethod.POST,
 	        				"/auth/register/professor",
 	        	            "/auth/register/aluno",
 	        	            "/turmas/criar")
 	        		.hasRole("ADMIN")
+	        		
 	        		.requestMatchers(HttpMethod.DELETE,
 	        				"/auth/delete/aluno/{registration}",
 	        	            "/auth/delete/professor/{num_vinculo}")
 	        		.hasRole("ADMIN")
+	        		.requestMatchers(HttpMethod.GET, 
+	        				"/turmas/buscar")
+	        		.hasAnyRole("ADMIN", "PROFESSOR")
 	        	        .anyRequest().authenticated()
 	        ).addFilterBefore(tokenFilter, UsernamePasswordAuthenticationFilter.class);
 
